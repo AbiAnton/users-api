@@ -1,14 +1,22 @@
 // Where the route establishment is
 
 const express = require("express");
-const cors = require("cors")
+const cors = require("cors");
+const { Pool } = require("pg");
 
 require("dotenv").config();
 
-const app = express(); // Establishes express app
-
+// Creating an express app that uses cors and json (way to communicate with databases)
+const app = express(); 
 app.use(cors());
 app.use(express.json());
+
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl:{
+        rejectUnauthorized: false,
+    },
+});
 
 //If the user does yet to the base url, they get the message below
 app.get("/", (req, res) => { 
@@ -19,8 +27,10 @@ app.get("/", (req, res) => {
 app.get("/users", async (req, res) =>{
     try{
         const result = await pool.query("SELECT * FROM users")
-    } catch{
-
+        res.json(result.rows)
+    } catch(error){
+        console.error(error)
+        res.status(500).json({error: "Failed to retrieve users"})
     }
 })
 
