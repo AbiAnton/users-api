@@ -3,7 +3,7 @@
 const express = require("express");
 const cors = require("cors");
 const { Pool } = require("pg");
-const supabase = require("./supabase");
+const supabase = require("./config/supabase");
 
 require("dotenv").config();
 
